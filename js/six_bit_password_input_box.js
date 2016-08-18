@@ -1,38 +1,51 @@
 /*
- * Javascript Document
+ * CSS Document
+ * 
  * Creat by Nelson 2016/02/18
  * 
- * Website:http://www.nelson_obj.com
+ * Website:https://segmentfault.com/u/nelson2016
  * 
  * QQ:616859570
- * Email:lirongkun@mytopbrand.com,616859570@qq.com
+ * 
+ * Email:Nelson_Lee@outlook.com , Nelson2016@aliyun.com
  * */
-Object.prototype.boxInput = function(){
-	var container = this;
-	return {
-		bindBoxinput:function(){
-			var realInput = container.findChild(".realInput")[0];
-			var bogusInput = container.findChild(".bogusInput")[0];
-			var bogusInputArr = bogusInput.children;
-			var maxLength = bogusInputArr[0].getAttribute("maxlength");
-			realInput.onkeyup = function(){
-				var real_str = this.value;
-				for(var i = 0 ; i < maxLength ; i++){
-					bogusInputArr[i].value = real_str[i]?real_str[i]:"";
-				}
+(function(){
+	var container = document.getElementById("inputBoxContainer");
+		boxInput = {
+		maxLength:"",
+		realInput:"",
+		bogusInput:"",
+		bogusInputArr:"",
+		init:function(){
+			var that = this;
+			that.realInput = container.children[0];
+			that.bogusInput = container.children[1];
+			that.bogusInputArr = that.bogusInput.children;
+			that.maxLength = that.bogusInputArr[0].getAttribute("maxlength");
+			that.realInput.oninput = function(){
+				that.setValue(this.value);
+			}
+			that.realInput.onpropertychange = function(){
+				that.setValue(this.value);
+			}
+		},
+		setValue:function(real_str){
+			for(var i = 0 ; i < this.maxLength ; i++){
+				this.bogusInputArr[i].value = real_str[i]?real_str[i]:"";
+			}
+			if(real_str.length >= this.maxLength){
+				this.realInput.value = real_str.substring(0,6);
 			}
 		},
 		getBoxInputValue:function(){
-			var bogusInput = container.findChild(".bogusInput")[0];
-			var bogusInputArr = bogusInput.children;
 			var realValue = "";
-			for(var i in bogusInputArr){
-				if(!bogusInputArr[i].value){
+			for(var i in this.bogusInputArr){
+				if(!this.bogusInputArr[i].value){
 					break;
 				}
-				realValue += bogusInputArr[i].value;
+				realValue += this.bogusInputArr[i].value;
 			}
 			return realValue;
 		}
 	}
-}
+})()
