@@ -16,25 +16,31 @@
 		realInput:"",
 		bogusInput:"",
 		bogusInputArr:"",
-		init:function(){
+		callback:"",
+		init:function(fun){
 			var that = this;
+			this.callback = fun;
 			that.realInput = container.children[0];
 			that.bogusInput = container.children[1];
 			that.bogusInputArr = that.bogusInput.children;
 			that.maxLength = that.bogusInputArr[0].getAttribute("maxlength");
 			that.realInput.oninput = function(){
-				that.setValue(this.value);
+				that.setValue();
 			}
 			that.realInput.onpropertychange = function(){
-				that.setValue(this.value);
+				that.setValue();
 			}
 		},
-		setValue:function(real_str){
+		setValue:function(){
+			this.realInput.value = this.realInput.value.replace(/\D/g,"");
+			console.log(this.realInput.value.replace(/\D/g,""))
+			var real_str = this.realInput.value;
 			for(var i = 0 ; i < this.maxLength ; i++){
 				this.bogusInputArr[i].value = real_str[i]?real_str[i]:"";
 			}
 			if(real_str.length >= this.maxLength){
 				this.realInput.value = real_str.substring(0,6);
+				this.callback();
 			}
 		},
 		getBoxInputValue:function(){
